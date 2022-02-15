@@ -1,7 +1,7 @@
 const mysql = require("../mysql");
 const bcrypt = require("bcrypt");
-const jwt = require('jsonwebtoken')
-const config = require('../config')
+const jwt = require("jsonwebtoken");
+const config = require("../config");
 
 exports.signup = (req, res, next) => {
   mysql.getConnection((err, conn) => {
@@ -14,8 +14,8 @@ exports.signup = (req, res, next) => {
         return next(errBcrypt);
       }
       conn.query(
-        "INSERT INTO users (name, email, password) VALUES (?, ?, ?)",
-        [req.body.name, req.body.email, hash],
+        "INSERT INTO users (name, email, cpf, password) VALUES (?, ?, ?, ?)",
+        [req.body.name, req.body.email, req.body.cpf, hash],
         (error, result, fields) => {
           conn.release();
           if (error) {
@@ -42,7 +42,7 @@ exports.signin = (req, res, next) => {
       [req.body.email],
       (error, result, fields) => {
         conn.release();
-        if (err) {
+        if (error) {
           return res.status(500).send({
             message: error.sqlMessage,
           });
@@ -60,19 +60,20 @@ exports.signin = (req, res, next) => {
                 return next(errBcrypt);
               }
               if (resultBcrypt) {
-                  const token = jwt.sign({
-                    "userId" : result[0].id,
-                    "userName" : result[0].name,
-                    "userEmail" : result[0].email,
+                const token = jwt.sign(
+                  {
+                    userId: result[0].id,
+                    userName: result[0].name,
+                    userEmail: result[0].email,
                   },
                   config.JWT_KEY,
                   {
-                      expiresIn : "1h"
+                    expiresIn: "1h",
                   }
-                  )
+                );
                 return res.status(200).send({
                   message: "Welcome, " + result[0].name,
-                  token : token
+                  token: token,
                 });
               }
               return res.status(401).send({
@@ -81,6 +82,29 @@ exports.signin = (req, res, next) => {
             }
           );
         }
+      }
+    );
+  });
+};
+
+exports.profile = (req, res, next) => {
+  mysql.getConnection((err, conn) => {
+    if (err) {
+      return next(new Error("Cant connect to database."));
+    }
+    conn.query(
+      "UPDATE users SET name = ?, email = ?",
+      [req.body.name, req.body.email],
+
+      (error, result, fields) => {
+        if (error) {
+          return res.status(500).send({
+            message: error.sqlMessage,
+          });
+        }
+        res.status(200).send({
+          message : "User profile updated."
+        })
       }
     );
   });
