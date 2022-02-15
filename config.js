@@ -10,6 +10,7 @@ const {
   MYSQL_USER,
   MYSQL_PASSWORD,
   MYSQL_DATABASE,
+  JWT_KEY,
 } = process.env;
 
 assert(SERVER_PORT, "Server port is required");
@@ -21,4 +22,5 @@ module.exports = {
   MYSQL_USER,
   MYSQL_PASSWORD,
   MYSQL_DATABASE,
+  JWT_KEY,
 };
