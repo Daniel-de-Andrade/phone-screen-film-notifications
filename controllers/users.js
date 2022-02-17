@@ -14,8 +14,8 @@ exports.signup = (req, res, next) => {
         return next(errBcrypt);
       }
       conn.query(
-        "INSERT INTO users (name, email, cpf, password) VALUES (?, ?, ?, ?)",
-        [req.body.name, req.body.email, req.body.cpf, hash],
+        "INSERT INTO users (name, email, password) VALUES (?, ?, ?)",
+        [req.body.name, req.body.email, hash],
         (error, result, fields) => {
           conn.release();
           if (error) {
@@ -103,8 +103,8 @@ exports.profile = (req, res, next) => {
           });
         }
         res.status(200).send({
-          message : "User profile updated."
-        })
+          message: "User profile updated.",
+        });
       }
     );
   });
