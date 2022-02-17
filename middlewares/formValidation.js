@@ -4,7 +4,7 @@ const { check, validationResult } = require("express-validator")
  * @function validate Validação de formulários
  */
 
- exports.validate = (method) => {
+ exports.users = (method) => {
     switch (method) {
   
       case "signup": // Regras de validação para cadastro

@@ -68,7 +68,7 @@ exports.signin = (req, res, next) => {
                   },
                   config.JWT_KEY,
                   {
-                    expiresIn: "1h",
+                    expiresIn: "30d",
                   }
                 );
                 return res.status(200).send({
@@ -93,8 +93,8 @@ exports.profile = (req, res, next) => {
       return next(new Error("Cant connect to database."));
     }
     conn.query(
-      "UPDATE users SET name = ?, email = ?",
-      [req.body.name, req.body.email],
+      "UPDATE users SET name = ?, email = ? WHERE id = ?",
+      [req.body.name, req.body.email, req.user.userId],
 
       (error, result, fields) => {
         if (error) {
