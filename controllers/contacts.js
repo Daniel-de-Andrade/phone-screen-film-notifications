@@ -94,29 +94,31 @@ exports.update = (req, res, next) => {
           });
         }
         if (results.length < 1) {
-          return res.status(500).send({
-            message: error.sqlMessage,
+          return res.status(404).send({
+            message: "No such contact.",
           });
+        } else {
+          conn.query(
+            "UPDATE contacts SET name = ?, email = ?, phone = ? WHERE id = ? AND user = ?",
+            [
+              req.body.name,
+              req.body.email,
+              req.body.phone,
+              req.body.id,
+              req.user.userId,
+            ],
+            (error, results, fields) => {
+              if (error) {
+                return res.status(500).send({
+                  message: error.sqlMessage,
+                });
+              }
+              res.send({
+                message: "Contact updated sucessfuly.",
+              });
+            }
+          );
         }
-      }
-    );
-
-    conn.query(
-      "UPDATE contacts SET name = ?, email = ?, phone = ? WHERE id = ? AND user = ?",
-      [
-        req.body.name,
-        req.body.email,
-        req.body.phone,
-        req.body.id,
-        res.user.userId,
-      ],
-      (error, results, fields) => {
-        if (error) {
-          return res.status(500).send({
-            message: error.sqlMessage,
-          });
-        }
-        res.send("");
       }
     );
   });
@@ -128,8 +130,9 @@ exports.delete = (req, res, next) => {
     if (err) {
       return next(new Error("Cant connect to database."));
     }
+
     conn.query(
-      "DELETE FROM contacts WHERE id = ?",
+      "SELECT * FROM contacts WHERE id = ?",
       [req.body.id],
       (error, results, fields) => {
         if (error) {
@@ -137,9 +140,26 @@ exports.delete = (req, res, next) => {
             message: error.sqlMessage,
           });
         }
-        res.status(200).send({
-          message: "Contact deleted successfuly.",
-        });
+        if (results.length < 1) {
+          return res.status(404).send({
+            message: "No such contact.",
+          });
+        } else {
+          conn.query(
+            "DELETE FROM contacts WHERE id = ?",
+            [req.body.id],
+            (error, results, fields) => {
+              if (error) {
+                return res.status(500).send({
+                  message: error.sqlMessage,
+                });
+              }
+              res.status(200).send({
+                message: "Contact deleted successfuly.",
+              });
+            }
+          );
+        }
       }
     );
   });
