@@ -6,7 +6,7 @@ const cors = require("cors");
 const app = express();
 
 const usersRoute = require("./routes/users");
-const contactsRoute = require("./routes/contacts");
+const screenFilmRoute = require("./routes/screen-film");
 
 app.use(morgan("dev"));
 app.use(cors());
@@ -27,7 +27,7 @@ app.use((req, res, next) => {
 });
 
 app.use("/users", usersRoute);
-app.use("/contacts", contactsRoute);
+app.use("/screen-film", screenFilmRoute);
 
 app.use((req, res, next) => {
   const error = new Error("Page not found.");

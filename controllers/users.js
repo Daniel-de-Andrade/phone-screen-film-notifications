@@ -14,7 +14,7 @@ exports.signup = (req, res, next) => {
         return next(errBcrypt);
       }
       conn.query(
-        "INSERT INTO users (name, email, password) VALUES (?, ?, ?)",
+        "INSERT INTO users (name, email, cpf, password) VALUES (?, ?, ?, ?)",
         [req.body.name, req.body.email, hash],
         (error, result, fields) => {
           conn.release();

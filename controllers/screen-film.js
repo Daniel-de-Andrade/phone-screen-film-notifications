@@ -7,8 +7,8 @@ exports.create = (req, res, next) => {
       return next(new Error("Cant connect to database."));
     }
     conn.query(
-      "INSERT INTO contacts (user, name, phone, email) VALUES (?, ?, ?, ?)",
-      [req.user.userId, req.body.name, req.body.phone, req.body.email],
+      "INSERT INTO screen-film (user, name, phone, imei, pdv) VALUES (?, ?, ?, ?, ?)",
+      [req.user.userId, req.body.name, req.body.phone, req.body.imei, req.body.pdv],
       (error, results, fields) => {
         if (error) {
           return res.status(500).send({

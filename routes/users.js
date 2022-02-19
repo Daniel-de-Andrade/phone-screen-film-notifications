@@ -1,17 +1,13 @@
 const express = require('express')
 const router = express.Router()
-const formValidation = require('../middlewares/formValidation')
+const formValidation = require('../middlewares/validations/users')
 const authInterceptor = require('../middlewares/authInterceptor')
 
 const usersCtrl = require('../controllers/users')
 
-router.post('/signup', formValidation.users('signup'), usersCtrl.signup)
-router.post('/signin', formValidation.users('signin'), usersCtrl.signin)
-router.post('/profile', authInterceptor, formValidation.users('profile'), usersCtrl.profile)
-
-const contactsCtrl = require('../controllers/contacts')
-
-router.post('/contacts', authInterceptor, usersCtrl.signup)
+router.post('/signup', formValidation('signup'), usersCtrl.signup)
+router.post('/signin', formValidation('signin'), usersCtrl.signin)
+router.post('/profile', authInterceptor, formValidation('profile'), usersCtrl.profile)
 
 
 module.exports = router
