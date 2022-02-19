@@ -41,7 +41,7 @@ exports.details = (req, res, next) => {
         }
         if (results.length < 1) {
           return res.status(404).send({
-            message: "User not found.",
+            message: "No such contact.",
           });
         }
         res.status(200).send({
